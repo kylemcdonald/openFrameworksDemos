@@ -4,11 +4,11 @@ This repository is a collection of assorted demos and examples using [openFramew
 
 ## Descriptions
 
-* BarnesHut
-* BinnedParticleSystem
-* GLSLParticleSystem
-* LutExample
-* NoiseFlocking
-* P52OF
-* RemapExample
-* VideoShuffler
+* BarnesHut: basic 2d implementation of the [Barnes-Hut](https://en.wikipedia.org/wiki/Barnes%E2%80%93Hut_simulation) quadtree particle system optimization, good for simulating large force-at-a-distance systems.
+* BinnedParticleSystem: basic 2d binning optimization for particle-particle interaction.
+* GLSLParticleSystem: example of using shaders to compute one-to-many interaction.
+* LutExample: applying a 3-channel lookup table to a live stream using a fragment shader.
+* NoiseFlocking: "[Clouds are Looming](http://www.openprocessing.org/sketch/6753)" style noise flocking simulation.
+* P52OF: port of a simple noise flocking simulation from Processing, done by pasting the code directly and creating a `PApp` class that wraps OF to make it look more like Processing.
+* RemapExample: per-pixel displacement example using a fragment shader.
+* VideoShuffler: loads a collection of videos from the `videos/` folder as specified by the `videos.xml` file.
