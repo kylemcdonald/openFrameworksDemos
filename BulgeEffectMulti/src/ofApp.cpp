@@ -2,17 +2,18 @@
 
 void ofApp::buildBulge(int bulgeSize) {
 	this->bulgeSize = bulgeSize;
-	bulgeShader.load("", "bulge.fs");
+	ofShader generateBulgeShader;
+	generateBulgeShader.load("", "generateBulge.fs");
 	ofFbo::Settings settings;
 	settings.width = bulgeSize, settings.height = bulgeSize;
 	settings.internalformat = GL_RGB32F;
 	bulge.allocate(settings);
 	bulge.begin();
-	bulgeShader.begin();
-	bulgeShader.setUniform1f("scale", bulgeSize / 2);
-	bulgeShader.setUniform1f("shape", 1.5);
+	generateBulgeShader.begin();
+	generateBulgeShader.setUniform1f("scale", bulgeSize / 2);
+	generateBulgeShader.setUniform1f("shape", 1.5);
 	ofRect(0, 0, bulgeSize, bulgeSize);
-	bulgeShader.end();
+	generateBulgeShader.end();
 	bulge.end();
 	
 	blendBulgeShader.load("", "blendBulge.fs");

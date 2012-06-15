@@ -12,6 +12,6 @@ public:
 	void buildBulge(int bulgeSize);
 	void drawBulge(float x, float y);
 	int bulgeSize;
-	ofShader bulgeShader, blendBulgeShader;
+	ofShader blendBulgeShader;
 	ofFbo bulge, blendBulge;
 };
