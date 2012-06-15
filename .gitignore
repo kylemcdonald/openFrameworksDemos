@@ -10,3 +10,6 @@ obj/
 bin/
 build/
 !data/
+
+*.sdf
+*.suo
