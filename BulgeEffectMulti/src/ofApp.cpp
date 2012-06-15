@@ -2,22 +2,27 @@
 
 void ofApp::buildBulge(int bulgeSize) {
 	this->bulgeSize = bulgeSize;
+	bulgeShader.load("", "bulge.fs");
 	ofFbo::Settings settings;
 	settings.width = bulgeSize, settings.height = bulgeSize;
 	settings.internalformat = GL_RGB32F;
 	bulge.allocate(settings);
 	bulge.begin();
-	shader.begin();
-	shader.setUniform1f("scale", bulgeSize / 2);
-	shader.setUniform1f("shape", 1.5);
+	bulgeShader.begin();
+	bulgeShader.setUniform1f("scale", bulgeSize / 2);
+	bulgeShader.setUniform1f("shape", 1.5);
 	ofRect(0, 0, bulgeSize, bulgeSize);
-	shader.end();
+	bulgeShader.end();
 	bulge.end();
+	
+	blendBulgeShader.load("", "blendBulge.fs");
+	settings.width = ofGetWidth(), settings.height = ofGetHeight();
+	blendBulge.allocate(settings);
 }
 
 void ofApp::setup() {
 	ofSetVerticalSync(true);
-	shader.load("bulge.vs", "bulge.fs");
+	
 	buildBulge(512);
 }
 
@@ -25,5 +30,15 @@ void ofApp::update() {
 }
 
 void ofApp::draw() {
-	bulge.draw(0, 0);
+	blendBulge.begin();
+	ofClear(128, 128, 0);
+	blendBulgeShader.begin();
+	blendBulgeShader.setUniformTexture("base", blendBulge.getTextureReference(), 1);
+	blendBulgeShader.setUniformTexture("tex", bulge.getTextureReference(), 2);
+	bulge.draw((ofGetWidth() - bulgeSize) / 2, (ofGetHeight() - bulgeSize) / 2);
+	bulge.draw(mouseX - bulgeSize / 2, mouseY - bulgeSize / 2);
+	blendBulgeShader.end();
+	blendBulge.end();
+	
+	blendBulge.draw(0, 0);
 }

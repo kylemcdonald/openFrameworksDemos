@@ -8,10 +8,10 @@ public:
 	void update();
 	void draw();
 	
-	ofShader shader;
+	ofShader bulgeShader, blendBulgeShader;
 	ofImage img;
 	
 	void buildBulge(int bulgeSize);
 	int bulgeSize;
-	ofFbo bulge;
+	ofFbo bulge, blendBulge;
 };
