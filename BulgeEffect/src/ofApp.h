@@ -7,4 +7,7 @@ public:
 	void setup();
 	void update();
 	void draw();
+	
+	ofShader shader;
+	ofImage img;
 };

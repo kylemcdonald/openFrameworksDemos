@@ -1,4 +1,4 @@
-uniform sampler2D tex;
+uniform sampler2DRect tex;
 uniform vec2 center;
 uniform float radius, shape;
 
@@ -11,5 +11,5 @@ void main() {
 	mag = (cos(PI * pow(min(mag, 1.), shape)) + 1.) / 2.; // complex , c0 and c1 (better near the edges)
 	offset *= max(mag, 0.);
 	//gl_FragColor = vec4(offset, 0., 1.);
-	gl_FragColor = texture2D(tex, (gl_TexCoord[0].xy + offset));
+	gl_FragColor = texture2DRect(tex, (gl_TexCoord[0].xy + offset));
 }
