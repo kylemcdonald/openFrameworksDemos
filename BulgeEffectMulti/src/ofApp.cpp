@@ -29,16 +29,25 @@ void ofApp::setup() {
 void ofApp::update() {
 }
 
+void ofApp::drawBulge(float x, float y) {
+	blendBulge.begin();
+	blendBulgeShader.begin();
+	bulge.draw(x, y);
+	blendBulgeShader.end();
+	blendBulge.end();
+}
+
 void ofApp::draw() {
 	blendBulge.begin();
-	ofClear(128, 128, 0);
+	ofClear(128, 128, 0);	
 	blendBulgeShader.begin();
 	blendBulgeShader.setUniformTexture("base", blendBulge.getTextureReference(), 1);
 	blendBulgeShader.setUniformTexture("tex", bulge.getTextureReference(), 2);
-	bulge.draw((ofGetWidth() - bulgeSize) / 2, (ofGetHeight() - bulgeSize) / 2);
-	bulge.draw(mouseX - bulgeSize / 2, mouseY - bulgeSize / 2);
 	blendBulgeShader.end();
 	blendBulge.end();
+	
+	drawBulge((ofGetWidth() - bulgeSize) / 2, (ofGetHeight() - bulgeSize) / 2);
+	drawBulge(mouseX - bulgeSize / 2, mouseY - bulgeSize / 2);	
 	
 	blendBulge.draw(0, 0);
 }
