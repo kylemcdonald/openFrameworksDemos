@@ -56,8 +56,8 @@ void ofApp::draw() {
 			drawBulge(x, y, bulgeSize / ofRandom(1, 4));
 		}
 	} else {
-		drawBulge(ofGetWidth() / 2, ofGetHeight() / 2, bulgeSize);
-		drawBulge(mouseX, mouseY, bulgeSize / 4);
+		drawBulge(ofGetWidth() / 2 - 50, ofGetHeight() / 2, 80);
+		drawBulge(ofGetWidth() / 2 + 50, ofGetHeight() / 2, 80);
 	}
 	
 	blendBulgeShader.end();
