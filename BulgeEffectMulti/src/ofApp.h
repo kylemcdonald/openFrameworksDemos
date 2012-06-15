@@ -8,10 +8,11 @@ public:
 	void update();
 	void draw();
 	
-	
 	void buildBulge(int bulgeSize);
-	void drawBulge(float x, float y);
+	void drawBulge(float x, float y, float side);
 	int bulgeSize;
-	ofShader blendBulgeShader;
+	ofShader blendBulgeShader, applyBulgeShader;
 	ofFbo bulge, blendBulge;
+	
+	ofVideoGrabber cam;
 };

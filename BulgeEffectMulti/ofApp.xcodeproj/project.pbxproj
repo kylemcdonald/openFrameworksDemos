@@ -57,6 +57,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		27EB0FA4158BDB2A006830AF /* applyBulge.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = applyBulge.fs; path = bin/data/applyBulge.fs; sourceTree = SOURCE_ROOT; };
+		27EB0FA5158BDB2A006830AF /* blendBulge.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = blendBulge.fs; path = bin/data/blendBulge.fs; sourceTree = SOURCE_ROOT; };
+		27EB0FA6158BDB2A006830AF /* generateBulge.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = generateBulge.fs; path = bin/data/generateBulge.fs; sourceTree = SOURCE_ROOT; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -105,6 +108,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		27EB0F91158BDB1F006830AF /* data */ = {
+			isa = PBXGroup;
+			children = (
+				27EB0FA4158BDB2A006830AF /* applyBulge.fs */,
+				27EB0FA5158BDB2A006830AF /* blendBulge.fs */,
+				27EB0FA6158BDB2A006830AF /* generateBulge.fs */,
+			);
+			name = data;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
@@ -159,6 +172,7 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				27EB0F91158BDB1F006830AF /* data */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
