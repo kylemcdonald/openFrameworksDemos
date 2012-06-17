@@ -10,6 +10,9 @@
     <ClCompile Include="src\ofApp.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\BulgeEffect.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -21,6 +24,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BulgeEffect.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "BulgeEffect.h"
 
 class ofApp : public ofBaseApp {
 public:
@@ -8,11 +9,6 @@ public:
 	void update();
 	void draw();
 	
-	void buildBulge(int bulgeSize);
-	void drawBulge(float x, float y, float side);
-	int bulgeSize;
-	ofShader blendBulgeShader, applyBulgeShader;
-	ofFbo bulge, blendBulge;
-	
+	BulgeEffect bulgeEffect;
 	ofVideoGrabber cam;
 };
