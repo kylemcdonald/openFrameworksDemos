@@ -39,11 +39,22 @@ protected:
 	float magnitude;
 };
 
-class ForceLimit : public Force {
+class FieldDonut : public Force {
 public:
-	ForceLimit(float limit);
+	FieldDonut(float x, float y, float radius, float magnitude, float minRadius = 1);
 	ofVec2f getForce(Particle& particle) const;
-	void draw() const {}
+	void draw() const;
 protected:
-	float limit;
+	ofVec2f center;
+	float radius, magnitude, minRadius;
+};
+
+class FieldLine : public Force {
+public:
+	FieldLine(ofVec2f begin, ofVec2f end, float magnitude, float minRadius = 1);
+	ofVec2f getForce(Particle& particle) const;
+	void draw() const;
+protected:
+	ofVec2f begin, end;
+	float magnitude, minRadius;
 };

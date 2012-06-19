@@ -4,13 +4,18 @@ void ofApp::setup(){
 	ofSetVerticalSync(true);
 	ofBackground(0);
 
-	for(int i = 0; i < 512; i++) {
+	for(int i = 0; i < 1024; i++) {
 		particles.push_back(Particle(ofRandomWidth(), ofRandomHeight()));
 	}
-	
+
 	forces.push_back(ofPtr<Force>(new ForceFriction(-.01)));
-	forces.push_back(ofPtr<Force>(new ForceLimit(4)));
-	
+
+	/*
+	int w = ofGetWidth(), h = ofGetHeight();
+	forces.push_back(ofPtr<Force>(new FieldDonut(w / 2, h / 2, w / 6, -.01, 10)));
+	forces.push_back(ofPtr<Force>(new FieldLine(ofVec2f(0, h / 2), ofVec2f(w, h / 2), -.01, 10)));
+	*/
+
 	for(int i = 0; i < 16; i++) {
 		ofVec2f begin(ofRandomWidth(), ofRandomHeight());
 		ofVec2f end = begin + ofVec2f(ofRandomf(), ofRandomf()) * 500;
