@@ -24,9 +24,9 @@ bool Camera::initGrabber(int width, int height) {
 		return false;
 	}
 	vi.setupDevice(deviceId, width, height);
-	width = vi.getWidth(deviceId);
-	height = vi.getHeight(deviceId);
-	img.allocate(width, height, OF_IMAGE_COLOR);
+	this->width = vi.getWidth(deviceId);
+	this->height = vi.getHeight(deviceId);
+	img.allocate(this->width, this->height, OF_IMAGE_COLOR);
 	return true;
 }
 

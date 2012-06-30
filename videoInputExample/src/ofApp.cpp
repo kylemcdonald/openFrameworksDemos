@@ -2,7 +2,7 @@
 
 void ofApp::setup() {
 	ofSetVerticalSync(true);
-	cam.initGrabber(1280, 720);
+	cam.initGrabber(800, 600);
 }
 
 void ofApp::update() {
