@@ -13,4 +13,5 @@ This repository is a collection of assorted demos and examples using [openFramew
 * NoiseFlocking: "[Clouds are Looming](http://www.openprocessing.org/sketch/6753)" style noise flocking simulation.
 * P52OF: port of a simple noise flocking simulation from Processing, done by pasting the code directly and creating a `PApp` class that wraps OF to make it look more like Processing.
 * RemapExample: per-pixel displacement example using a fragment shader.
+* VideoRecorder: demonstrates how to use ofxQTKitVideoGrabber on OSX to preview a webcam feed, record a video, and then load and play it back.
 * VideoShuffler: loads a collection of videos from the `videos/` folder as specified by the `videos.xml` file.
