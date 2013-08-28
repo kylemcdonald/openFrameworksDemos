@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ofMain.h"
 #include "ofAppGlutWindow.h"
 
@@ -129,3 +127,15 @@ public:
 		ofLine(x1, y1, x2, y2);
 	}
 };
+
+
+class ofApp : public PApp {
+public:	
+#include "main.h"
+};
+
+int main() {
+	ofAppGlutWindow window;
+	ofSetupOpenGL(&window, 512, 512, OF_WINDOW);
+	ofRunApp(new ofApp());
+}
