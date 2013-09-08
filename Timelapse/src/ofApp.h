@@ -8,6 +8,8 @@ public:
 	void update();
 	void draw();
 	
-	ofShader shader;
-	ofVideoGrabber img;
+	ofVideoGrabber cam;
+	ofImage img;
+	float lastTime, delayTime;
+	unsigned int frameCount;
 };

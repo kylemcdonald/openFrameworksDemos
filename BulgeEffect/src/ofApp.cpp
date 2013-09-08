@@ -3,10 +3,12 @@
 void ofApp::setup() {
 	ofSetVerticalSync(true);
 	shader.load("bulge.vs", "bulge.fs");
-	img.loadImage("gradient-grid.png");
+	//img.loadImage("gradient-grid.png");
+	img.initGrabber(640, 480);
 }
 
 void ofApp::update() {
+	img.update();
 }
 
 void ofApp::draw() {
