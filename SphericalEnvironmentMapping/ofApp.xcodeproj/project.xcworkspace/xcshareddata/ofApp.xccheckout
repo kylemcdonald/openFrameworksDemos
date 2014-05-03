@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>E73CBB43-4A74-48DA-ACAE-0582601AD9DB</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ofApp</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E67A4F6F-CCB2-427B-B008-C01CC58D3103</key>
+		<string>ssh://github.com/kylemcdonald/openFrameworks.git</string>
+		<key>EC9C09A2-5C09-44F7-BC4E-D7D4C555D45E</key>
+		<string>ssh://github.com/kylemcdonald/openFrameworksDemos.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>apps/openFrameworksDemos/SphericalEnvironmentMapping/ofApp.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E67A4F6F-CCB2-427B-B008-C01CC58D3103</key>
+		<string>../../../../..</string>
+		<key>EC9C09A2-5C09-44F7-BC4E-D7D4C555D45E</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/kylemcdonald/openFrameworksDemos.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E67A4F6F-CCB2-427B-B008-C01CC58D3103</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E67A4F6F-CCB2-427B-B008-C01CC58D3103</string>
+			<key>IDESourceControlWCCName</key>
+			<string>openFrameworks</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>EC9C09A2-5C09-44F7-BC4E-D7D4C555D45E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>openFrameworksDemos</string>
+		</dict>
+	</array>
+</dict>
+</plist>
