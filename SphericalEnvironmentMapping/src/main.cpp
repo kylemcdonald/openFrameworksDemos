@@ -1,4 +1,4 @@
-#include "ofAppGLFWWindow.h"
+#include "ofAppGlutWindow.h"
 #include "ofMain.h"
 
 class ofApp : public ofBaseApp {
@@ -26,12 +26,16 @@ public:
         mesh.draw();
         shader.end();
         cam.end();
-        ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
+    }
+    
+    void dragEvent(ofDragInfo dragInfo) {
+        matCap.loadImage(dragInfo.files[0]);
+        matCap.update();
     }
 };
 
 int main() {
-	ofAppGLFWWindow window;
-	ofSetupOpenGL(&window, 1024, 768, OF_FULLSCREEN);
+	ofAppGlutWindow window;
+	ofSetupOpenGL(&window, 1024, 768, OF_WINDOW);
 	ofRunApp(new ofApp());
 }
