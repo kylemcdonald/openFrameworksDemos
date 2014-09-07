@@ -40,7 +40,13 @@ void StackedPlot::addData(const vector<float>& data) {
         ofLogWarning("StackedPlot") << "added data does not have same size as existing data";
         clear();
     }
-    history.push_back(data);
+    vector<float> normalized = normalize(data);
+    vector<float> accumulated = accumulate(normalized);
+    vector<float> all;
+    all.push_back(0);
+    all.insert(all.end(), accumulated.begin(), accumulated.end());
+    all.push_back(1);
+    history.push_back(all);
     while(history.size() > historyLength) {
         history.pop_front();
     }
@@ -52,7 +58,7 @@ int StackedPlot::size() const {
     return history.size();
 }
 int StackedPlot::dimensions() const {
-    return size() ? history.front().size() : 0;
+    return size() ? history.front().size() - 2 : 0;
 }
 void StackedPlot::draw(float width, float height) const {
     ofPushMatrix();
@@ -65,15 +71,10 @@ void StackedPlot::draw(float width, float height) const {
     list<vector<float> >::const_iterator itr;
     int i;
     for(itr = history.begin(), i = 0; itr != history.end(); itr++, i++) {
-        vector<float> normalized = normalize(*itr);
-        vector<float> accumulated = accumulate(normalized);
-        vector<float> all;
-        all.push_back(0);
-        all.insert(all.end(), accumulated.begin(), accumulated.end());
-        all.push_back(1);
+        const vector<float>& cur = *itr;
         for(int j = 0; j < d; j++) {
-            meshes[j].addVertex(ofVec2f(i, all[j]));
-            meshes[j].addVertex(ofVec2f(i, all[j + 1]));
+            meshes[j].addVertex(ofVec2f(i, cur[j]));
+            meshes[j].addVertex(ofVec2f(i, cur[j + 1]));
         }
     }
     ofScale(width / (historyLength - 1), height);
