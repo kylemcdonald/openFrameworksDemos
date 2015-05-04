@@ -160,36 +160,23 @@ public:
 	}
 	void sumForces(Particle& cur) {
 		if(!empty) {
-			float xd = x - cur.x;
-			float yd = y - cur.y;
-			float rsq = xd * xd + yd * yd;
+            ofVec2f d = *this - cur;
+            float rsq = d.lengthSquared();
 			if(rsq > 0) {
 				if(sqrtf(rsq) / side > accuracy) {
 					// far away, approximate
 					float mor3 = mass / rsq;
-					cur.xf += xd * mor3;
-					cur.yf += yd * mor3;
+                    cur.force += d * mor3;
 				} else if(nParticles) {
 					// too close, sum particles
-					//ofSetColor(255, 0, 0);
-					//ofRect(minX, minY, side, side);
 					for(int i = 0; i < nParticles; i++) {
 						Particle& target = *particles[i];
-/*
-						// if you move .update() to draw(), uncomment to watch
-						// connections drawn between exact calculations
-						ofSetColor(0, 0, 128);
-						ofLine(cur.x, cur.y, (target.x + cur.x) / 2, (target.y + cur.y) / 2);
-						ofSetColor(0, 0, 255);
-						ofLine((target.x + cur.x) / 2, (target.y + cur.y) / 2, target.x, target.y);
-*/
+                        // exact calculations
 						if(&target != &cur) {
-							xd = target.x - cur.x;
-							yd = target.y - cur.y;
-							rsq = xd * xd + yd * yd;
+                            d = target - cur;
+                            rsq = d.lengthSquared();
 							float mor3 = target.mass / rsq;
-							cur.xf += xd * mor3;
-							cur.yf += yd * mor3;
+                            cur.force += d * mor3;
 						}
 					}
 				} else {
