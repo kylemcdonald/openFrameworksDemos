@@ -3,16 +3,16 @@
 
 class ofApp : public ofBaseApp {
 public:
-    ParticleSystem particleSystem;
+    ParticleSystem ps;
     
     void setup(){
         ofBackground(0);
         
-        particleSystem.clear();
-        int particleCount = 100;
+        ps.clear();
+        int particleCount = 1000;
         float size = 256;
         
-        particleSystem.setExact(true);
+        ps.setExact(true);
         
         float velocity = 1;
         for(int i = 0; i < particleCount; i++) {
@@ -23,24 +23,25 @@ public:
             float yv = sin(theta) * velocity;
             float mass = ofRandom(1, 4);
             Particle particle(x, y, mass, xv, yv);
-            particleSystem.add(particle);
+            ps.add(particle);
         }
-        particleSystem.setTimeStep(.1);
-        particleSystem.setFriction(.99);
-        particleSystem.setCentering(1.);
-        particleSystem.setGravitationalConstant(-100);
-        particleSystem.setIterations(100);
+        
+        ps.setTimeStep(.1);
+        ps.setFriction(.9);
+        ps.setCentering(.1);
+        ps.setGravitationalConstant(-100);
+        ps.setIterations(1);
     }
     
     void draw(){
         ofPushMatrix();
         ofFill();
         ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-        particleSystem.update();
-        particleSystem.draw();
+        ps.update();
+        ps.draw();
         ofPopMatrix();
         
-        ofDrawBitmapString(ofToString(particleSystem.size()) + " particles", 32, 32);
+        ofSetColor(255);
         ofDrawBitmapString(ofToString((int) ofGetFrameRate()) + " fps", 32, 52);
     }
     
@@ -53,8 +54,8 @@ public:
     
     void mousePressed(int x, int y, int button){
         float mass = ofRandom(1, 4);
-        Particle particle(x, y, mass);
-        particleSystem.add(particle);
+        Particle particle(x - ofGetWidth() / 2, y - ofGetHeight() / 2, mass);
+        ps.add(particle);
     }
 };
 

@@ -18,14 +18,8 @@ protected:
 			particles[i].zeroForce();
 		}
 	}
-    void applyCentering() {
-        for(Particle& cur : particles) {
-            float length = cur.length();
-            cur.force += centering * -cur;
-        }
-    }
 	vector<Particle> particles;
-	void approximateSolve() {
+	void sumGravityApproximate() {
 		Tree tree;
 		tree.build(particles);
         ofPushStyle();
@@ -36,10 +30,10 @@ protected:
 		int n = particles.size();
 		for(int i = 0; i < n; i++) {
 			Particle& cur = particles[i];
-			tree.sumForces(cur);
+            tree.sumForces(cur);
 		}
 	}
-	void exactSolve() {
+	void sumGravityExact() {
 		int n = particles.size();
 		for(int i = 0; i < n; i++) {
 			Particle& a = particles[i];
@@ -48,14 +42,24 @@ protected:
 					Particle& b = particles[j];
                     ofVec2f d = b - a;
                     float r = d.length();
-                    float r2 = r * r;
-                    d /= r;
-                    a.force += d * (b.mass / r2);
+                    float mor3 = b.mass / (r * r * r);
+                    a.force += d * mor3;
 				}
             }
-            a.force *= a.mass * gravitationalConstant;
 		}
-	}
+    }
+    void applyGravity() {
+        for(Particle& cur : particles) {
+            // could probably square the constant...
+            cur.force *= cur.mass * gravitationalConstant;
+        }
+    }
+    void applyCentering() {
+        for(Particle& cur : particles) {
+            float length = cur.length();
+            cur.force += centering * -cur;
+        }
+    }
     void updatePositions(float dt) {
         for(Particle& cur : particles) {
 			cur.updatePosition(dt, friction);
@@ -101,10 +105,11 @@ public:
         for(int i = 0; i < iterations; i++) {
             zeroForces();
             if(exact) {
-                exactSolve();
+                sumGravityExact();
             } else {
-                approximateSolve();
+                sumGravityApproximate();
             }
+            applyGravity();
             applyCentering();
             updatePositions(dt);
         }

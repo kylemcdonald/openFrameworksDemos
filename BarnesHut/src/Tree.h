@@ -7,17 +7,12 @@
 
 class Tree : public Body {
 public:
-	// 0 approximates everything
-	// 1 is exact within leaves
-	// 2 is exact with adjacent leaves
-	static const float accuracy = 0.5;
-
 	bool empty;
 	int nParticles;
 	Particle* particles[maxParticles];
 	bool hasChildren;
 	Tree *nw, *ne, *sw, *se;
-	float minX, minY, midX, midY, maxX, maxY, side;
+    float minX, minY, midX, midY, maxX, maxY, side, diag;
 
 	Tree() :
 		empty(true),
@@ -47,6 +42,7 @@ public:
 		midX = (minX + maxX) / 2;
 		midY = (minY + maxY) / 2;
 		side = maxX - minX;
+        diag = sqrt(2 * side * side);
 	}
 	void findBoundaries(vector<Particle>& all) {
 		minX = all[0].x;
@@ -148,8 +144,8 @@ public:
 					mass += cur.mass;
 				}
 				x /= mass;
-				y /= mass;
-			}
+                y /= mass;
+            }
 		}
 	}
 	void build(vector<Particle>& particles) {
@@ -161,23 +157,24 @@ public:
 	void sumForces(Particle& cur) {
 		if(!empty) {
             ofVec2f d = *this - cur;
-            float rsq = d.lengthSquared();
-			if(rsq > 0) {
-				if(sqrtf(rsq) / side > accuracy) {
+            float r = d.length();
+			if(r > 0) {
+				if(r > diag) {
 					// far away, approximate
-					float mor3 = mass / rsq;
+                    float mor3 = mass / (r * r * r);
                     cur.force += d * mor3;
 				} else if(nParticles) {
-					// too close, sum particles
+					// close, sum particles
 					for(int i = 0; i < nParticles; i++) {
 						Particle& target = *particles[i];
                         // exact calculations
 						if(&target != &cur) {
                             d = target - cur;
-                            rsq = d.lengthSquared();
-							float mor3 = target.mass / rsq;
+                            r = d.length();
+                            float mor3 = target.mass / (r * r * r);
                             cur.force += d * mor3;
-						}
+                        }
+//                        ofDrawLine(cur.x, cur.y, this->x, this->y);
 					}
 				} else {
 					// too close, go deeper
@@ -190,7 +187,7 @@ public:
 		}
 	}
 	void draw() {
-		ofRect(minX, minY, maxX - minX, maxY - minY);
+//		ofRect(minX, minY, maxX - minX, maxY - minY);
 		if(hasChildren) {
 			nw->draw();
 			ne->draw();

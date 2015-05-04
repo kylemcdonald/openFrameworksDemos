@@ -5,6 +5,7 @@
 
 class Particle : public Body {
 public:
+    ofVec2f prevVelocity;
     ofVec2f force, velocity;
     float radius;
     Particle(float _x, float _y, float _mass,
@@ -14,9 +15,11 @@ public:
     radius(radius) {
     }
     void updatePosition(float dt, float friction = 1) {
-        velocity += dt * force / mass;
+        ofVec2f acceleration = force / mass;
+        prevVelocity = velocity;
+        velocity += dt * acceleration;
         velocity *= friction;
-        *this += dt * velocity;
+        *this += dt * prevVelocity.interpolate(velocity, .5);
     }
     void zeroForce() {
         force.set(0, 0);
