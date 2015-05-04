@@ -6,15 +6,17 @@ public:
     ParticleSystem ps;
     
     void setup(){
+        int q = 100;
+        
         ofBackground(0);
         
         ps.clear();
         int particleCount = 1000;
-        float size = 256;
+        float size = MIN(ofGetWidth(), ofGetHeight()) / 2;
         
         ps.setExact(false);
         
-        float velocity = 1;
+        float velocity = 10;
         for(int i = 0; i < particleCount; i++) {
             float x = ofRandom(-size, size);
             float y = ofRandom(-size, size);
@@ -26,18 +28,25 @@ public:
             ps.add(particle);
         }
         
-        ps.setTimeStep(.1);
+        ps.setTimeStep(.5);
         ps.setFriction(.9);
         ps.setCentering(.1);
         ps.setGravitationalConstant(-100);
-        ps.setIterations(1);
+        ps.setIterations(5);
     }
     
     void draw(){
+        if(ofGetFrameNum() % 4 == 0) {
+            float mass = ofRandom(1, 4);
+            Particle particle(0, -ofGetHeight() / 2, mass, 0, 0);
+            ps.add(particle);
+        }
+        
         ofPushMatrix();
         ofFill();
         ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
         ps.update();
+        ofSetColor(255, 128);
         ps.draw();
         ofPopMatrix();
         
@@ -60,6 +69,6 @@ public:
 };
 
 int main() {
-    ofSetupOpenGL(512, 512, OF_WINDOW);
+    ofSetupOpenGL(800, 800, OF_WINDOW);
     ofRunApp(new ofApp());
 }

@@ -11,7 +11,7 @@ public:
 	int nParticles;
 	Particle* particles[maxParticles];
 	bool hasChildren;
-	Tree *nw, *ne, *sw, *se;
+	shared_ptr<Tree> nw, ne, sw, se;
     float minX, minY, midX, midY, maxX, maxY, side, diag;
 
 	Tree() :
@@ -29,14 +29,6 @@ public:
 		minX(_minX), minY(_minY),
 		maxX(_maxX), maxY(_maxY) {
 		setMid();
-	}
-	~Tree() {
-		if(hasChildren) {
-			delete nw;
-			delete ne;
-			delete sw;
-			delete se;
-		}
 	}
 	void setMid() {
 		midX = (minX + maxX) / 2;
@@ -95,10 +87,10 @@ public:
 				nParticles++;
 				empty = false;
 			} else {
-				nw = new Tree(minX, minY, midX, midY);
-				ne = new Tree(midX, minY, maxX, midY);
-				sw = new Tree(minX, midY, midX, maxY);
-				se = new Tree(midX, midY, maxX, maxY);
+				nw = shared_ptr<Tree>(new Tree(minX, minY, midX, midY));
+				ne = shared_ptr<Tree>(new Tree(midX, minY, maxX, midY));
+				sw = shared_ptr<Tree>(new Tree(minX, midY, midX, maxY));
+				se = shared_ptr<Tree>(new Tree(midX, midY, maxX, maxY));
 				hasChildren = true;
 				for(int i = 0; i < nParticles; i++)
 					add(*particles[i]);
@@ -154,40 +146,39 @@ public:
 		addAll(particles);
 		findCenterOfMass();
 	}
-	void sumForces(Particle& cur) {
+	void sumForces(Particle& cur) const {
 		if(!empty) {
             ofVec2f d = *this - cur;
-            float r = d.length();
-			if(r > 0) {
-				if(r > diag) {
-					// far away, approximate
-                    float mor3 = mass / (r * r * r);
-                    cur.force += d * mor3;
-				} else if(nParticles) {
-					// close, sum particles
-					for(int i = 0; i < nParticles; i++) {
-						Particle& target = *particles[i];
-                        // exact calculations
-						if(&target != &cur) {
-                            d = target - cur;
-                            r = d.length();
-                            float mor3 = target.mass / (r * r * r);
-                            cur.force += d * mor3;
-                        }
-//                        ofDrawLine(cur.x, cur.y, this->x, this->y);
-					}
-				} else {
-					// too close, go deeper
-					nw->sumForces(cur);
-					ne->sumForces(cur);
-					sw->sumForces(cur);
-					se->sumForces(cur);
-				}
-			}
+            if(d.x > +side || d.x < -side ||
+               d.y > +side || d.y < -side) {
+                // far away, approximate
+                float r = d.length();
+                d *= mass / (r * r * r);
+                cur.force += d;
+            } else if(nParticles) {
+                // close, sum particles
+                for(int i = 0; i < nParticles; i++) {
+                    const Particle& target = *particles[i];
+                    // exact calculations
+                    if(&target != &cur) {
+                        d = target - cur;
+                        float r = d.length();
+                        d *= target.mass / (r * r * r);
+                        cur.force += d;
+                    }
+//                    ofDrawLine(cur.x, cur.y, this->x, this->y);
+                }
+            } else {
+                // too close, go deeper
+                nw->sumForces(cur);
+                ne->sumForces(cur);
+                sw->sumForces(cur);
+                se->sumForces(cur);
+            }
 		}
 	}
-	void draw() {
-//		ofRect(minX, minY, maxX - minX, maxY - minY);
+	void draw() const {
+		ofDrawRectangle(minX, minY, maxX - minX, maxY - minY);
 		if(hasChildren) {
 			nw->draw();
 			ne->draw();
