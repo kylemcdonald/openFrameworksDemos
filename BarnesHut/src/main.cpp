@@ -12,7 +12,7 @@ public:
         int particleCount = 1000;
         float size = 256;
         
-        ps.setExact(true);
+        ps.setExact(false);
         
         float velocity = 1;
         for(int i = 0; i < particleCount; i++) {
