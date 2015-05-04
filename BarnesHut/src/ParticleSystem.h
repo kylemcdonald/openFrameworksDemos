@@ -21,9 +21,7 @@ protected:
 		}
 	}
 	vector<Particle> particles;
-	void sumGravityApproximate() {
-        unsigned long start, stop;
-        
+	void sumGravityApproximate() {        
         // this takes about 2400us
 		Tree tree;
         tree.build(particles);
@@ -34,7 +32,6 @@ protected:
 //        tree.draw();
 //        ofPopStyle();
         
-        start = ofGetElapsedTimeMicros();
         int n = particles.size();
 #ifdef USE_GCD
         dispatch_apply(n, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(size_t i) {
@@ -46,8 +43,6 @@ protected:
 #ifdef USE_GCD
         );
 #endif;
-        stop = ofGetElapsedTimeMicros();
-        cout << (stop - start) << "us for tree.sumForces(particles[i])" << endl;
 	}
 	void sumGravityExact() {
 		int n = particles.size();
@@ -138,7 +133,9 @@ public:
         }
 	}
     void draw() {
+        int i = 0;
         for(Particle& particle : particles) {
+            ofSetColor(ofColor::fromHsb(((i++)%25)*10, 255, 255));
 			particle.draw();
         }
 	}

@@ -46,7 +46,6 @@ public:
         ofFill();
         ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
         ps.update();
-        ofSetColor(255, 128);
         ps.draw();
         ofPopMatrix();
         
