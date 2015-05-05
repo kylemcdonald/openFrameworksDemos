@@ -28,11 +28,11 @@ public:
             ps.add(particle);
         }
         
-        ps.setTimeStep(.1);
+        ps.setTimeStep(.5);
         ps.setFriction(.9);
-        ps.setCentering(.1);
-        ps.setGravitationalConstant(-100);
-        ps.setIterations(1);
+        ps.setCentering(.01);
+        ps.setGravitationalConstant(-10);
+        ps.setIterations(5);
     }
     
     void draw(){
