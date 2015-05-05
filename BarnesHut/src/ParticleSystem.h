@@ -2,6 +2,10 @@
 
 #include "Tree.h"
 #include "Particle.h"
+#include "Spring.h"
+
+#define MAX_PARTICLE_COUNT 10000
+#define MAX_SPRING_COUNT 10000
 
 #define USE_GCD
 
@@ -16,6 +20,27 @@
 #else
 #define LOOP_END()
 #endif
+
+template <class T>
+void checkMemoryDistance(const vector<T>& data) {
+    size_t prevLocation = 0;
+    float sumDiff = 0;
+    for(const T& cur : data) {
+        size_t curLocation = (size_t) &cur;
+        if(prevLocation) {
+            size_t absDiff = 0;
+            if(prevLocation > curLocation) {
+                absDiff = prevLocation - curLocation;
+            } else {
+                absDiff = curLocation - prevLocation;
+            }
+            sumDiff += absDiff;
+        }
+        prevLocation = curLocation;
+    }
+    float avgDiff = sumDiff / data.size();
+    cout << (int) avgDiff << endl;
+}
 
 class ParticleSystem {
 protected:
@@ -56,7 +81,7 @@ protected:
 			Particle& a = particles[i];
 			for(int j = 0; j < n; j++) {
 				if(i != j) {
-					Particle& b = particles[j];
+					const Particle& b = particles[j];
                     ofVec2f d = b - a;
                     float r = d.length();
                     r = MAX(r, (a.radius + b.radius));
@@ -79,22 +104,16 @@ protected:
         }
     }
     void applySprings() {
-        for(Spring& spring : springs) {
-            spring.update();
-        }
-//        int n = springs.size();
-//        LOOP_BEGIN(i, n) {
-//            springs[i].update();
-//        } LOOP_END();
+        int n = springs.size();
+        LOOP_BEGIN(i, n) {
+            springs[i].update();
+        } LOOP_END();
     }
     void updatePositions(float dt) {
-        for(Particle& particle : particles) {
-            particle.updatePosition(dt, friction);
-        }
-//        int n = particles.size();
-//        LOOP_BEGIN(i, n) {
-//			particles[i].updatePosition(dt, friction);
-//        } LOOP_END();
+        int n = particles.size();
+        LOOP_BEGIN(i, n) {
+			particles[i].updatePosition(dt, friction);
+        } LOOP_END();
 	}
 public:
 	ParticleSystem() {
@@ -103,6 +122,8 @@ public:
 		this->timeStep = 1;
 		this->friction = 1;
         this->iterations = 1;
+        particles.reserve(MAX_PARTICLE_COUNT);
+        springs.reserve(MAX_SPRING_COUNT);
 	}
 	void setExact(bool exact) {
 		this->exact = exact;
@@ -122,12 +143,11 @@ public:
     void setCentering(float centering) {
         this->centering = centering;
     }
-	void add(Particle& p) {
-		particles.push_back(p);
+	void add(const Particle& particle) {
+		particles.push_back(particle);
     }
-    void addSpring(Particle* a, Particle* b, float stiffness, float distance = 0) {
-       Spring spring(a, b, stiffness, distance);
-       springs.push_back(spring);
+    void addSpring(Particle& a, Particle& b, float stiffness, float distance = 0) {
+        springs.push_back(Spring(a, b, stiffness, distance));
     }
     Particle& getParticle(int i) {
         return particles[i];
@@ -158,13 +178,13 @@ public:
     void draw() {
         ofPushStyle();
         int i = 0;
-        for(Particle& particle : particles) {
+        for(const Particle& particle : particles) {
             ofSetColor(ofColor::fromHsb(((i++)%25)*10, 255, 255));
 			particle.draw();
         }
         ofSetLineWidth(4);
         ofSetColor(255, 128);
-        for(Spring& spring : springs) {
+        for(const Spring& spring : springs) {
             spring.draw();
         }
         ofPopStyle();

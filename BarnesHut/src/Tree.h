@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Particle.h"
-#include "assert.h"
 
 #define maxParticles 4
 
@@ -36,7 +35,7 @@ public:
 		side = maxX - minX;
         diag = sqrt(2 * side * side);
 	}
-	void findBoundaries(vector<Particle>& all) {
+	void findBoundaries(const vector<Particle>& all) {
 		minX = all[0].x;
 		minY = all[0].y;
 		maxX = minX;
@@ -100,9 +99,9 @@ public:
 		}
 	}
 	void addAll(vector<Particle>& all) {
-		int n = all.size();
-		for(int i = 0; i < n; i++)
-			add(all[i]);
+        for(Particle& particle : all) {
+            add(particle);
+        }
 	}
 	void findCenterOfMass() {
 		if(hasChildren) {
@@ -130,7 +129,7 @@ public:
 		} else {
 			if(nParticles) {
 				for(int i = 0; i < nParticles; i++) {
-					Particle& cur = *particles[i];
+					const Particle& cur = *particles[i];
 					x += cur.x * cur.mass;
 					y += cur.y * cur.mass;
 					mass += cur.mass;
@@ -160,7 +159,7 @@ public:
                 for(int i = 0; i < nParticles; i++) {
                     const Particle& target = *particles[i];
                     // exact calculations
-                    if(&target != &cur) {
+                    if(target != cur) {
                         d = target - cur;
                         float r = d.length();
                         r = MAX(r, MAX(target.radius, cur.radius));
