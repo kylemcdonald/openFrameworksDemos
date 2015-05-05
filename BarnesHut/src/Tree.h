@@ -8,7 +8,7 @@ class Tree : public Body {
 public:
 	bool empty;
 	int nParticles;
-	shared_ptr<Particle> particles[maxParticles];
+	Particle* particles[maxParticles];
 	bool hasChildren;
 	shared_ptr<Tree> nw, ne, sw, se;
     float minX, minY, midX, midY, maxX, maxY, side, diag;
@@ -35,21 +35,21 @@ public:
 		side = maxX - minX;
         diag = sqrt(2 * side * side);
 	}
-	void findBoundaries(vector<shared_ptr<Particle> >& all) {
-		minX = all[0]->x;
-		minY = all[0]->y;
+	void findBoundaries(const vector<Particle>& all) {
+		minX = all[0].x;
+		minY = all[0].y;
 		maxX = minX;
 		maxY = minY;
 		int n = all.size();
 		for(int i = 0; i < n; i++) {
-			if(all[i]->x < minX)
-				minX = all[i]->x;
-			if(all[i]->y < minY)
-				minY = all[i]->y;
-			if(all[i]->x > maxX)
-				maxX = all[i]->x;
-			if(all[i]->y > maxY)
-				maxY = all[i]->y;
+			if(all[i].x < minX)
+				minX = all[i].x;
+			if(all[i].y < minY)
+				minY = all[i].y;
+			if(all[i].x > maxX)
+				maxX = all[i].x;
+			if(all[i].y > maxY)
+				maxY = all[i].y;
 		}
 		setMid();
 	}
@@ -65,16 +65,16 @@ public:
 		maxY = centerY + halfSide;
 		setMid();
 	}
-	void add(shared_ptr<Particle>& cur) {
+	void add(Particle& cur) {
 		if(hasChildren) {
-			if(cur->x < midX) {
-				if(cur->y < midY) {
+			if(cur.x < midX) {
+				if(cur.y < midY) {
 					nw->add(cur);
 				} else {
 					sw->add(cur);
 				}
 			} else {
-				if(cur->y < midY) {
+				if(cur.y < midY) {
 					ne->add(cur);
 				} else {
 					se->add(cur);
@@ -82,7 +82,7 @@ public:
 			}
 		} else {
 			if(nParticles < maxParticles) {
-				particles[nParticles] = cur;
+				particles[nParticles] = &cur;
 				nParticles++;
 				empty = false;
 			} else {
@@ -92,16 +92,16 @@ public:
 				se = shared_ptr<Tree>(new Tree(midX, midY, maxX, maxY));
 				hasChildren = true;
 				for(int i = 0; i < nParticles; i++)
-					add(particles[i]);
+					add(*particles[i]);
 				nParticles = 0;
 				add(cur);
 			}
 		}
 	}
-	void addAll(vector<shared_ptr<Particle> >& all) {
-		int n = all.size();
-		for(int i = 0; i < n; i++)
-			add(all[i]);
+	void addAll(vector<Particle>& all) {
+        for(Particle& particle : all) {
+            add(particle);
+        }
 	}
 	void findCenterOfMass() {
 		if(hasChildren) {
@@ -129,42 +129,42 @@ public:
 		} else {
 			if(nParticles) {
 				for(int i = 0; i < nParticles; i++) {
-					shared_ptr<Particle>& cur = particles[i];
-					x += cur->x * cur->mass;
-					y += cur->y * cur->mass;
-					mass += cur->mass;
+					const Particle& cur = *particles[i];
+					x += cur.x * cur.mass;
+					y += cur.y * cur.mass;
+					mass += cur.mass;
 				}
 				x /= mass;
                 y /= mass;
             }
 		}
 	}
-	void build(vector<shared_ptr<Particle> >& particles) {
+	void build(vector<Particle>& particles) {
 		findBoundaries(particles);
 		squareBoundaries();
 		addAll(particles);
 		findCenterOfMass();
 	}
-	void sumForces(shared_ptr<Particle>& cur) const {
+	void sumForces(Particle& cur) const {
 		if(!empty) {
-            ofVec2f d = *this - *cur;
+            ofVec2f d = *this - cur;
             if(d.x > +side || d.x < -side ||
                d.y > +side || d.y < -side) {
                 // far away, approximate
                 float r = d.length();
                 d *= mass / (r * r * r);
-                cur->force += d;
+                cur.force += d;
             } else if(nParticles) {
                 // close, sum particles
                 for(int i = 0; i < nParticles; i++) {
-                    const shared_ptr<Particle>& target = particles[i];
+                    const Particle& target = *particles[i];
                     // exact calculations
                     if(target != cur) {
-                        d = *target - *cur;
+                        d = target - cur;
                         float r = d.length();
-                        r = MAX(r, MAX(target->radius, cur->radius));
-                        d *= target->mass / (r * r * r);
-                        cur->force += d;
+                        r = MAX(r, MAX(target.radius, cur.radius));
+                        d *= target.mass / (r * r * r);
+                        cur.force += d;
                     }
 //                    ofDrawLine(cur.x, cur.y, this->x, this->y);
                 }

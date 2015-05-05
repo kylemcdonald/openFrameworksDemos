@@ -1,9 +1,3 @@
-/*
- switch from shared_ptr to reserved memory
- might be worth it to add a USE_MASS declaration
- would be a significant increase if all mass=1
- */
-
 #include "ofMain.h"
 #include "ParticleSystem.h"
 
@@ -32,11 +26,12 @@ public:
             float mass = ofRandom(10, 100);
             Particle particle(x, y, mass, xv, yv);
             ps.add(particle);
-        }
-        for(int i = 1; i < particleCount; i++) {
-            shared_ptr<Particle> a = ps.getParticle(i);
-            shared_ptr<Particle> b = ps.getParticle(ofRandom(i / 10));
-            ps.addSpring(a, b, 1000, 100);
+            
+            if(i > 1) {
+                Particle& a = ps.getParticle(i);
+                Particle& b = ps.getParticle(ofRandom(i / 10));
+                ps.addSpring(a, b, 2000, 50);
+            }
         }
         
         ps.setTimeStep(.5);

@@ -5,14 +5,15 @@
 
 class Spring {
 public:
-    shared_ptr<Particle> a, b;
+    Particle* a;
+    Particle* b;
     float length, stiffness;
-    Spring(shared_ptr<Particle> a, shared_ptr<Particle> b, float stiffness, float length = 0)
-    :a(a)
-    ,b(b)
+    Spring(Particle& a, Particle& b, float stiffness, float length = 0)
+    :a(&a)
+    ,b(&b)
     ,stiffness(stiffness) {
         if(length == 0) {
-            length = a->distance(*b);
+            length = a.distance(b);
         }
         this->length = length;
     }
@@ -27,7 +28,7 @@ public:
         a->force += normal * -dx;
         b->force += normal * +dx;
     }
-    void draw() {
+    void draw() const {
         ofDrawLine(*a, *b);
     }
 };

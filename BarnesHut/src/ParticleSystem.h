@@ -4,6 +4,9 @@
 #include "Particle.h"
 #include "Spring.h"
 
+#define MAX_PARTICLE_COUNT 10000
+#define MAX_SPRING_COUNT 10000
+
 #define USE_GCD
 
 #ifdef USE_GCD
@@ -18,46 +21,25 @@
 #define LOOP_END()
 #endif
 
-bool memoryLocation(const shared_ptr<Particle>& a, const shared_ptr<Particle>& b) {
-    return ((size_t) a.get()) < ((size_t) b.get());
-}
-
-void sortByLocation(vector<shared_ptr<Particle> >& data) {
-    ofSort(data, memoryLocation);
-}
-
 template <class T>
-void checkMemoryDistance(vector<shared_ptr<T> >& data) {
-    shared_ptr<T> prev;
-    size_t minDiff = 0;
-    size_t maxDiff = 0;
+void checkMemoryDistance(const vector<T>& data) {
+    size_t prevLocation = 0;
     float sumDiff = 0;
-    for(shared_ptr<T>& cur : data) {
-        if(prev) {
-            size_t a = (size_t) prev.get();
-            size_t b = (size_t) cur.get();
+    for(const T& cur : data) {
+        size_t curLocation = (size_t) &cur;
+        if(prevLocation) {
             size_t absDiff = 0;
-            if(a > b) {
-                absDiff = a - b;
+            if(prevLocation > curLocation) {
+                absDiff = prevLocation - curLocation;
             } else {
-                absDiff = b - a;
-            }
-            if(minDiff == 0 || absDiff < minDiff) {
-                minDiff = absDiff;
-            }
-            if(maxDiff == 0 || absDiff > maxDiff) {
-                maxDiff = absDiff;
+                absDiff = curLocation - prevLocation;
             }
             sumDiff += absDiff;
         }
-        prev = cur;
+        prevLocation = curLocation;
     }
     float avgDiff = sumDiff / data.size();
-    
     cout << (int) avgDiff << endl;
-//    << ", "
-//        << minDiff << ", "
-//        << maxDiff << endl;
 }
 
 class ParticleSystem {
@@ -69,13 +51,13 @@ protected:
     int iterations;
     float centering;
     
-    vector<shared_ptr<Particle> > particles;
-    vector<shared_ptr<Spring> > springs;
+    vector<Particle> particles;
+    vector<Spring> springs;
     
 	void zeroForces() {
 		int n = particles.size();
 		for(int i = 0; i < n; i++) {
-			particles[i]->zeroForce();
+			particles[i].zeroForce();
 		}
 	}
 	void sumGravityApproximate() {
@@ -96,48 +78,42 @@ protected:
 	void sumGravityExact() {
 		int n = particles.size();
         LOOP_BEGIN(i, n) {
-			shared_ptr<Particle>& a = particles[i];
+			Particle& a = particles[i];
 			for(int j = 0; j < n; j++) {
 				if(i != j) {
-					shared_ptr<Particle> b = particles[j];
-                    ofVec2f d = *b - *a;
+					const Particle& b = particles[j];
+                    ofVec2f d = b - a;
                     float r = d.length();
-                    r = MAX(r, (a->radius + b->radius));
-                    float mor3 = b->mass / (r * r * r);
-                    a->force += d * mor3;
+                    r = MAX(r, (a.radius + b.radius));
+                    float mor3 = b.mass / (r * r * r);
+                    a.force += d * mor3;
 				}
             }
         } LOOP_END();
     }
     void applyGravity() {
-        for(auto cur : particles) {
+        for(Particle& cur : particles) {
             // could probably square the constant...
-            cur->force *= cur->mass * gravitationalConstant;
+            cur.force *= cur.mass * gravitationalConstant;
         }
     }
     void applyCentering() {
-        for(auto cur : particles) {
-            float length = cur->length();
-            cur->force += cur->mass * centering * -(*cur);
+        for(Particle& cur : particles) {
+            float length = cur.length();
+            cur.force += cur.mass * centering * -cur;
         }
     }
     void applySprings() {
-        for(auto spring : springs) {
-            spring->update();
-        }
-//        int n = springs.size();
-//        LOOP_BEGIN(i, n) {
-//            springs[i]->update();
-//        } LOOP_END();
+        int n = springs.size();
+        LOOP_BEGIN(i, n) {
+            springs[i].update();
+        } LOOP_END();
     }
     void updatePositions(float dt) {
-        for(auto particle : particles) {
-            particle->updatePosition(dt, friction);
-        }
-//        int n = particles.size();
-//        LOOP_BEGIN(i, n) {
-//			particles[i]->updatePosition(dt, friction);
-//        } LOOP_END();
+        int n = particles.size();
+        LOOP_BEGIN(i, n) {
+			particles[i].updatePosition(dt, friction);
+        } LOOP_END();
 	}
 public:
 	ParticleSystem() {
@@ -146,6 +122,8 @@ public:
 		this->timeStep = 1;
 		this->friction = 1;
         this->iterations = 1;
+        particles.reserve(MAX_PARTICLE_COUNT);
+        springs.reserve(MAX_SPRING_COUNT);
 	}
 	void setExact(bool exact) {
 		this->exact = exact;
@@ -166,20 +144,12 @@ public:
         this->centering = centering;
     }
 	void add(const Particle& particle) {
-        add(shared_ptr<Particle>(new Particle(particle)));
-    }
-    void add(shared_ptr<Particle> particle) {
 		particles.push_back(particle);
-        sortByLocation(particles);
-        checkMemoryDistance(particles);
     }
-    void addSpring(shared_ptr<Particle> a, shared_ptr<Particle> b, float stiffness, float distance = 0) {
-        addSpring(shared_ptr<Spring>(new Spring(a, b, stiffness, distance)));
+    void addSpring(Particle& a, Particle& b, float stiffness, float distance = 0) {
+        springs.push_back(Spring(a, b, stiffness, distance));
     }
-    void addSpring(shared_ptr<Spring> spring) {
-       springs.push_back(spring);
-    }
-    shared_ptr<Particle> getParticle(int i) {
+    Particle& getParticle(int i) {
         return particles[i];
     }
     unsigned int size() {
@@ -208,14 +178,14 @@ public:
     void draw() {
         ofPushStyle();
         int i = 0;
-        for(auto particle : particles) {
+        for(const Particle& particle : particles) {
             ofSetColor(ofColor::fromHsb(((i++)%25)*10, 255, 255));
-			particle->draw();
+			particle.draw();
         }
         ofSetLineWidth(4);
         ofSetColor(255, 128);
-        for(auto spring : springs) {
-            spring->draw();
+        for(const Spring& spring : springs) {
+            spring.draw();
         }
         ofPopStyle();
 	}
