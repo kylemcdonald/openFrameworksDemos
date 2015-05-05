@@ -35,21 +35,20 @@ public:
 		side = maxX - minX;
         diag = sqrt(2 * side * side);
 	}
-	void findBoundaries(const vector<Particle>& all) {
-		minX = all[0].x;
-		minY = all[0].y;
+	void findBoundaries(vector<shared_ptr<Particle> >& all) {
+		minX = all[0]->x;
+		minY = all[0]->y;
 		maxX = minX;
 		maxY = minY;
-		int n = all.size();
-		for(int i = 0; i < n; i++) {
-			if(all[i].x < minX)
-				minX = all[i].x;
-			if(all[i].y < minY)
-				minY = all[i].y;
-			if(all[i].x > maxX)
-				maxX = all[i].x;
-			if(all[i].y > maxY)
-				maxY = all[i].y;
+        for(shared_ptr<Particle>& particle : all) {
+			if(particle->x < minX)
+				minX = particle->x;
+			if(particle->y < minY)
+				minY = particle->y;
+			if(particle->x > maxX)
+				maxX = particle->x;
+			if(particle->y > maxY)
+				maxY = particle->y;
 		}
 		setMid();
 	}
@@ -98,9 +97,9 @@ public:
 			}
 		}
 	}
-	void addAll(vector<Particle>& all) {
-        for(Particle& particle : all) {
-            add(particle);
+	void addAll(vector<shared_ptr<Particle> >& all) {
+        for(shared_ptr<Particle>& particle : all) {
+            add(*particle.get());
         }
 	}
 	void findCenterOfMass() {
@@ -129,7 +128,7 @@ public:
 		} else {
 			if(nParticles) {
 				for(int i = 0; i < nParticles; i++) {
-					const Particle& cur = *particles[i];
+					Particle& cur = *particles[i];
 					x += cur.x * cur.mass;
 					y += cur.y * cur.mass;
 					mass += cur.mass;
@@ -139,32 +138,32 @@ public:
             }
 		}
 	}
-	void build(vector<Particle>& particles) {
+	void build(vector<shared_ptr<Particle> >& particles) {
 		findBoundaries(particles);
 		squareBoundaries();
 		addAll(particles);
 		findCenterOfMass();
 	}
-	void sumForces(Particle& cur) const {
+	void sumForces(shared_ptr<Particle>& cur) const {
 		if(!empty) {
-            ofVec2f d = *this - cur;
+            ofVec2f d = *this - *cur;
             if(d.x > +side || d.x < -side ||
                d.y > +side || d.y < -side) {
                 // far away, approximate
                 float r = d.length();
                 d *= mass / (r * r * r);
-                cur.force += d;
+                cur->force += d;
             } else if(nParticles) {
                 // close, sum particles
                 for(int i = 0; i < nParticles; i++) {
                     const Particle& target = *particles[i];
                     // exact calculations
-                    if(target != cur) {
-                        d = target - cur;
+                    if(target != *cur) {
+                        d = target - *cur;
                         float r = d.length();
-                        r = MAX(r, MAX(target.radius, cur.radius));
+                        r = MAX(r, MAX(target.radius, cur->radius));
                         d *= target.mass / (r * r * r);
-                        cur.force += d;
+                        cur->force += d;
                     }
 //                    ofDrawLine(cur.x, cur.y, this->x, this->y);
                 }
@@ -177,7 +176,7 @@ public:
             }
 		}
 	}
-	void draw() const {
+	void draw() {
 		ofDrawRectangle(minX, minY, maxX - minX, maxY - minY);
 		if(hasChildren) {
 			nw->draw();

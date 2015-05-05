@@ -23,35 +23,45 @@ public:
             float theta = ofRandom(-PI, PI);
             float xv = cos(theta) * velocity;
             float yv = sin(theta) * velocity;
-            float mass = ofRandom(10, 100);
-            Particle particle(x, y, mass, xv, yv);
-            ps.add(particle);
+            float mass = 1; //ofRandom(10, 100);
+            ps.addParticle(Particle(x, y, mass, xv, yv));
             
             if(i > 1) {
-                Particle& a = ps.getParticle(i);
-                Particle& b = ps.getParticle(ofRandom(i / 10));
-                ps.addSpring(a, b, 2000, 50);
+                shared_ptr<Particle>& a = ps.getParticle(i);
+                shared_ptr<Particle>& b = ps.getParticle(ofRandom(i / 10));
+                ps.addSpring(a, b, 2000, 100);
             }
         }
         
-        ps.setTimeStep(.5);
+        ps.setTimeStep(.8);
         ps.setFriction(.9);
-        ps.setCentering(.001);
-        ps.setGravitationalConstant(-100);
-        ps.setIterations(5);
+        ps.setCentering(.1);
+        ps.setGravitationalConstant(-1000);
+        ps.setIterations(40);
     }
     
     void draw(){
-        if(ofGetFrameNum() % 10 == 0) {
-            float mass = ofRandom(10, 500);
-            Particle particle(0, -ofGetHeight() / 2, mass, 0, 100);
-//            ps.add(particle);
-        }
-        
         ofPushMatrix();
         ofFill();
         ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+        
+        int choice = ofRandom(4);
+        switch(choice) {
+            case 0:
+                ps.addParticle(Particle(ofRandomWidth() - ofGetWidth() / 2, ofRandomHeight() - ofGetHeight() / 2, 1, 0, 0));
+                break;
+            case 1:
+                ps.removeParticle(ofRandom(ps.getParticleCount()));
+                break;
+            case 2:
+                ps.addSpring(ofRandom(ps.getParticleCount()), ofRandom(ps.getParticleCount()), 2000, 100);
+                break;
+            case 3:
+                ps.removeSpring(ofRandom(ps.getSpringCount()));
+                break;
+        }
         ps.update();
+        
         ps.draw();
         ofPopMatrix();
         
@@ -67,9 +77,9 @@ public:
     }
     
     void mousePressed(int x, int y, int button){
-        float mass = ofRandom(1, 4);
+        float mass = 1;//ofRandom(1, 4);
         Particle particle(x - ofGetWidth() / 2, y - ofGetHeight() / 2, mass);
-        ps.add(particle);
+        ps.addParticle(particle);
     }
 };
 

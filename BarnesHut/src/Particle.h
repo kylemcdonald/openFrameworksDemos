@@ -3,8 +3,6 @@
 #include "Body.h"
 #include "ofGraphics.h"
 
-#define CACHE_VELOCITY
-
 class Particle : public Body {
 public:
     ofVec2f force;
