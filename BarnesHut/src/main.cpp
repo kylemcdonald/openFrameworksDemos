@@ -11,7 +11,7 @@ public:
         ofBackground(0);
         
         ps.clear();
-        int particleCount = 1000;
+        int particleCount = 2000;
         float size = MIN(ofGetWidth(), ofGetHeight()) / 2;
         
         ps.setExact(false);
@@ -33,11 +33,11 @@ public:
             }
         }
         
-        ps.setTimeStep(.8);
+        ps.setTimeStep(.2);
         ps.setFriction(.9);
         ps.setCentering(.1);
         ps.setGravitationalConstant(-1000);
-        ps.setIterations(40);
+        ps.setIterations(10);
     }
     
     void draw(){
@@ -45,7 +45,7 @@ public:
         ofFill();
         ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
         
-        int choice = ofRandom(4);
+        int choice = ofRandom(3);
         switch(choice) {
             case 0:
                 ps.addParticle(Particle(ofRandomWidth() - ofGetWidth() / 2, ofRandomHeight() - ofGetHeight() / 2, 1, 0, 0));
@@ -54,10 +54,11 @@ public:
                 ps.removeParticle(ofRandom(ps.getParticleCount()));
                 break;
             case 2:
-                ps.addSpring(ofRandom(ps.getParticleCount()), ofRandom(ps.getParticleCount()), 2000, 100);
-                break;
-            case 3:
-                ps.removeSpring(ofRandom(ps.getSpringCount()));
+                if(ps.getSpringCount() > ps.getParticleCount()) {
+                    ps.removeSpring(ofRandom(ps.getSpringCount()));
+                } else {
+                    ps.addSpring(ofRandom(ps.getParticleCount()), ofRandom(ps.getParticleCount()), 2000, 100);
+                }
                 break;
         }
         ps.update();

@@ -193,7 +193,7 @@ public:
             ofSetColor(ofColor::fromHsb(((i++)%25)*10, 255, 255));
             particle->draw();
         }
-        ofSetColor(255, 128);
+        ofSetColor(255, 32);
         for(const shared_ptr<Spring>& spring : springs) {
             spring->draw();
         }
