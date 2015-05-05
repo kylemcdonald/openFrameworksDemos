@@ -5,6 +5,18 @@
 
 #define USE_GCD
 
+#ifdef USE_GCD
+#define LOOP_BEGIN(i, n) dispatch_apply(n, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(size_t i)
+#else
+#define LOOP_BEGIN(i, n) for(int i = 0; i < n; i++)
+#endif
+
+#ifdef USE_GCD
+#define LOOP_END() )
+#else
+#define LOOP_END()
+#endif
+
 class ParticleSystem {
 protected:
 	bool exact;
@@ -13,16 +25,17 @@ protected:
     float friction;
     int iterations;
     float centering;
-
+    
+    vector<Particle> particles;
+    vector<Spring> springs;
+    
 	void zeroForces() {
 		int n = particles.size();
 		for(int i = 0; i < n; i++) {
 			particles[i].zeroForce();
 		}
 	}
-	vector<Particle> particles;
-	void sumGravityApproximate() {        
-        // this takes about 2400us
+	void sumGravityApproximate() {
 		Tree tree;
         tree.build(particles);
         
@@ -33,24 +46,13 @@ protected:
 //        ofPopStyle();
         
         int n = particles.size();
-#ifdef USE_GCD
-        dispatch_apply(n, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(size_t i) {
-#else
-        for(int i = 0; i < n; i++) {
-#endif
+        LOOP_BEGIN(i, n) {
             tree.sumForces(particles[i]);
-        }
-#ifdef USE_GCD
-        );
-#endif;
+        } LOOP_END();
 	}
 	void sumGravityExact() {
 		int n = particles.size();
-#ifdef USE_GCD
-        dispatch_apply(n, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(size_t i) {
-#else
-        for(int i = 0; i < n; i++) {
-#endif
+        LOOP_BEGIN(i, n) {
 			Particle& a = particles[i];
 			for(int j = 0; j < n; j++) {
 				if(i != j) {
@@ -62,10 +64,7 @@ protected:
                     a.force += d * mor3;
 				}
             }
-		}
-#ifdef USE_GCD
-        );
-#endif
+        } LOOP_END();
     }
     void applyGravity() {
         for(Particle& cur : particles) {
@@ -79,10 +78,23 @@ protected:
             cur.force += cur.mass * centering * -cur;
         }
     }
+    void applySprings() {
+        for(Spring& spring : springs) {
+            spring.update();
+        }
+//        int n = springs.size();
+//        LOOP_BEGIN(i, n) {
+//            springs[i].update();
+//        } LOOP_END();
+    }
     void updatePositions(float dt) {
-        for(Particle& cur : particles) {
-			cur.updatePosition(dt, friction);
-		}
+        for(Particle& particle : particles) {
+            particle.updatePosition(dt, friction);
+        }
+//        int n = particles.size();
+//        LOOP_BEGIN(i, n) {
+//			particles[i].updatePosition(dt, friction);
+//        } LOOP_END();
 	}
 public:
 	ParticleSystem() {
@@ -112,7 +124,14 @@ public:
     }
 	void add(Particle& p) {
 		particles.push_back(p);
-	}
+    }
+    void addSpring(Particle* a, Particle* b, float stiffness, float distance = 0) {
+       Spring spring(a, b, stiffness, distance);
+       springs.push_back(spring);
+    }
+    Particle& getParticle(int i) {
+        return particles[i];
+    }
     unsigned int size() {
         return particles.size();
     }
@@ -129,15 +148,25 @@ public:
                 sumGravityApproximate();
             }
             applyGravity();
-            applyCentering();
+            if(centering != 0) {
+                applyCentering();
+            }
+            applySprings();
             updatePositions(dt);
         }
 	}
     void draw() {
+        ofPushStyle();
         int i = 0;
         for(Particle& particle : particles) {
             ofSetColor(ofColor::fromHsb(((i++)%25)*10, 255, 255));
 			particle.draw();
         }
+        ofSetLineWidth(4);
+        ofSetColor(255, 128);
+        for(Spring& spring : springs) {
+            spring.draw();
+        }
+        ofPopStyle();
 	}
 };

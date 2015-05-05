@@ -1,3 +1,14 @@
+/*
+ need to set a max velocity on all particles
+ or a max force on the springs, or make them asymptotic
+ need to change all particles to shared_ptr of particles
+ this might also fix some weird instabilities with the GCD loops?
+ so springs can have reference that doesn't change
+ as new particles are added
+ might be worth it to add a USE_MASS declaration
+ would be a significant increase if all mass=1
+ */
+
 #include "ofMain.h"
 #include "ParticleSystem.h"
 
@@ -16,22 +27,27 @@ public:
         
         ps.setExact(false);
         
-        float velocity = 10;
+        float velocity = 0;
         for(int i = 0; i < particleCount; i++) {
             float x = ofRandom(-size, size);
             float y = ofRandom(-size, size);
             float theta = ofRandom(-PI, PI);
             float xv = cos(theta) * velocity;
             float yv = sin(theta) * velocity;
-            float mass = ofRandom(10, 500);
+            float mass = ofRandom(10, 100);
             Particle particle(x, y, mass, xv, yv);
             ps.add(particle);
+        }
+        for(int i = 1; i < particleCount; i++) {
+            Particle& a = ps.getParticle(i);
+            Particle& b = ps.getParticle(ofRandom(i / 10));
+            ps.addSpring(&a, &b, 10, 100);
         }
         
         ps.setTimeStep(.5);
         ps.setFriction(.9);
-        ps.setCentering(.01);
-        ps.setGravitationalConstant(-10);
+        ps.setCentering(.001);
+        ps.setGravitationalConstant(-100);
         ps.setIterations(5);
     }
     

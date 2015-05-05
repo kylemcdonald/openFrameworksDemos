@@ -29,3 +29,31 @@ public:
         ofDrawCircle(x, y, radius);
     }
 };
+
+class Spring {
+public:
+    Particle* a;
+    Particle* b;
+    float length, stiffness;
+    Spring(Particle* a, Particle* b, float stiffness, float length = 0)
+    :a(a)
+    ,b(b)
+    ,stiffness(stiffness) {
+        if(length == 0) {
+            length = a->distance(*b);
+        }
+        this->length = length;
+    }
+    void update() {
+        ofVec2f normal = *b - *a;
+        float curLength = normal.length();
+        float displacement = length - curLength;
+        normal /= curLength;
+        displacement *= stiffness;
+        a->force += normal * -displacement;
+        b->force += normal * +displacement;
+    }
+    void draw() {
+        ofDrawLine(*a, *b);
+    }
+};
