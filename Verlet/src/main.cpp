@@ -1,8 +1,6 @@
 #include "ofMain.h"
-#include <memory>
-using namespace std;
 
-#define USE_VBO
+//#define USE_VBO
 
 class Particle {
 public:
@@ -162,7 +160,7 @@ public:
     ,height(height)
     ,friction(0.99)
     ,gravity(0, 0.2)
-    ,draggedEntity(nullptr){
+    ,draggedEntity(NULL){
     }
     
     void frame(float step) {
@@ -227,9 +225,9 @@ public:
     }
     
     ofVec2f * nearestEntity() {
-        ofVec2f mouse(ofGetMouseX(), ofGetMouseY());
-        ofVec2f * entity = nullptr;
-        vector<Constraint*> * constraintsNearest = nullptr;
+        mouse = ofVec2f(ofGetMouseX(), ofGetMouseY());
+        ofVec2f * entity = NULL;
+        vector<Constraint*> * constraintsNearest = NULL;
         float selectionRadius = 10;
         float d2Nearest = numeric_limits<float>::max();
         for(auto & composite : composites) {
@@ -269,7 +267,7 @@ public:
     }
     
     void mouseReleased() {
-        draggedEntity = nullptr;
+        draggedEntity = NULL;
     }
 };
 
@@ -319,7 +317,7 @@ public:
     ofApp()
     :cloth(ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2),
     		ofGetWidth() / 2, ofGetHeight() / 2,
-            150, 6, 2)
+            25, 6, 2)
     ,t(0)
     {
 
@@ -329,19 +327,10 @@ public:
         ofBackground(255);
     }
     void update() {
-    	auto now = ofGetElapsedTimeMicros();
         cloth.frame(16);
-    	auto then = ofGetElapsedTimeMicros();
-    	t += then-now;
-    	if(ofGetFrameNum()%60==0){
-    		cout << "time " << t/60 << endl;
-    		t = 0;
-    	}
     }
     void draw() {
         cloth.draw();
-        ofSetColor(0);
-        ofDrawBitmapString(ofGetFrameRate(),20,20);
     }
     void mousePressed(int x, int y, int button) {
         cloth.mousePressed(x, y);
