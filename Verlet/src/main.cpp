@@ -327,6 +327,8 @@ public:
     }
     void draw() {
         cloth->draw();
+        ofSetColor(0);
+        ofDrawBitmapString(ofGetFrameRate(),20,20);
     }
     void mousePressed(int x, int y, int button) {
         cloth->mouseMoved(x, y);
