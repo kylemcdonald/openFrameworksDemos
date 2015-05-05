@@ -315,15 +315,24 @@ public:
 class ofApp : public ofBaseApp {
 public:
     shared_ptr<Cloth> cloth;
+    uint64_t t;
     void setup() {
         ofBackground(255);
         float width = ofGetWidth(), height = ofGetHeight();
         cloth = shared_ptr<Cloth>(new Cloth(ofVec2f(width / 2, height / 2),
                                             width / 2, height / 2,
                                             25, 6, 2));
+        t = 0;
     }
     void update() {
+    	auto now = ofGetElapsedTimeMicros();
         cloth->frame(16);
+    	auto then = ofGetElapsedTimeMicros();
+    	t += then-now;
+    	if(ofGetFrameNum()%60==0){
+    		cout << "time " << t/60 << endl;
+    		t = 0;
+    	}
     }
     void draw() {
         cloth->draw();
