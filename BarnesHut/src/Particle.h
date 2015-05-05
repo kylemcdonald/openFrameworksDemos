@@ -9,10 +9,10 @@ public:
     ofVec2f force, velocity;
     float radius;
     Particle(float _x, float _y, float _mass,
-             float _xv = 0, float _yv = 0, float radius = 1) :
+             float _xv = 0, float _yv = 0) :
     Body(_x, _y, _mass),
-    velocity(_xv, _yv),
-    radius(radius) {
+    velocity(_xv, _yv) {
+        radius = sqrtf(mass);
     }
     void updatePosition(float dt, float friction = 1) {
         ofVec2f acceleration = force / mass;
@@ -26,6 +26,6 @@ public:
     }
     void draw() {
         //ofRect(x, y, mass, mass);
-        ofDrawCircle(x, y, mass);
+        ofDrawCircle(x, y, radius);
     }
 };

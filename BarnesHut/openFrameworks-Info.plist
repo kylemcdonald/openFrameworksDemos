@@ -17,7 +17,7 @@
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>NSHighResolutionCapable</key>
-	<false/>
+	<true/>
 	<key>CFBundleIconFile</key>
 	<string>${ICON}</string>
 </dict>

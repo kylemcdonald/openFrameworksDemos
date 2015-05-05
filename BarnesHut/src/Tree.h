@@ -163,6 +163,7 @@ public:
                     if(&target != &cur) {
                         d = target - cur;
                         float r = d.length();
+                        r = MAX(r, MAX(target.radius, cur.radius));
                         d *= target.mass / (r * r * r);
                         cur.force += d;
                     }

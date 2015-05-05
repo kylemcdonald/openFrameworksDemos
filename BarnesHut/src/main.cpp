@@ -23,23 +23,23 @@ public:
             float theta = ofRandom(-PI, PI);
             float xv = cos(theta) * velocity;
             float yv = sin(theta) * velocity;
-            float mass = ofRandom(1, 4);
+            float mass = ofRandom(10, 500);
             Particle particle(x, y, mass, xv, yv);
             ps.add(particle);
         }
         
-        ps.setTimeStep(.5);
+        ps.setTimeStep(.1);
         ps.setFriction(.9);
         ps.setCentering(.1);
         ps.setGravitationalConstant(-100);
-        ps.setIterations(5);
+        ps.setIterations(1);
     }
     
     void draw(){
-        if(ofGetFrameNum() % 4 == 0) {
-            float mass = ofRandom(1, 4);
-            Particle particle(0, -ofGetHeight() / 2, mass, 0, 0);
-            ps.add(particle);
+        if(ofGetFrameNum() % 10 == 0) {
+            float mass = ofRandom(10, 500);
+            Particle particle(0, -ofGetHeight() / 2, mass, 0, 100);
+//            ps.add(particle);
         }
         
         ofPushMatrix();
@@ -68,6 +68,6 @@ public:
 };
 
 int main() {
-    ofSetupOpenGL(800, 800, OF_WINDOW);
+    ofSetupOpenGL(1680, 1050, OF_FULLSCREEN);
     ofRunApp(new ofApp());
 }

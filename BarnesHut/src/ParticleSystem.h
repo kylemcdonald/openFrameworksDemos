@@ -57,6 +57,7 @@ protected:
 					Particle& b = particles[j];
                     ofVec2f d = b - a;
                     float r = d.length();
+                    r = MAX(r, (a.radius + b.radius));
                     float mor3 = b.mass / (r * r * r);
                     a.force += d * mor3;
 				}
@@ -75,7 +76,7 @@ protected:
     void applyCentering() {
         for(Particle& cur : particles) {
             float length = cur.length();
-            cur.force += centering * -cur;
+            cur.force += cur.mass * centering * -cur;
         }
     }
     void updatePositions(float dt) {
