@@ -6,33 +6,10 @@ public:
     ParticleSystem ps;
     
     void setup(){
-        int q = 100;
-        
         ofBackground(0);
         
         ps.clear();
-        int particleCount = 2000;
-        float size = MIN(ofGetWidth(), ofGetHeight()) / 2;
-        
         ps.setExact(false);
-        
-        float velocity = 0;
-        for(int i = 0; i < particleCount; i++) {
-            float x = ofRandom(-size, size);
-            float y = ofRandom(-size, size);
-            float theta = ofRandom(-PI, PI);
-            float xv = cos(theta) * velocity;
-            float yv = sin(theta) * velocity;
-            float mass = 1; //ofRandom(10, 100);
-            ps.addParticle(Particle(x, y, mass, xv, yv));
-            
-            if(i > 1) {
-                shared_ptr<Particle>& a = ps.getParticle(i);
-                shared_ptr<Particle>& b = ps.getParticle(ofRandom(i / 10));
-                ps.addSpring(a, b, 2000, 100);
-            }
-        }
-        
         ps.setTimeStep(.2);
         ps.setFriction(.9);
         ps.setCentering(.1);
@@ -48,10 +25,11 @@ public:
         int choice = ofRandom(3);
         switch(choice) {
             case 0:
-                ps.addParticle(Particle(ofRandomWidth() - ofGetWidth() / 2, ofRandomHeight() - ofGetHeight() / 2, 1, 0, 0));
-                break;
-            case 1:
-                ps.removeParticle(ofRandom(ps.getParticleCount()));
+                if(ps.getParticleCount() < 2000) {
+                    ps.addParticle(Particle(ofRandomWidth() - ofGetWidth() / 2, ofRandomHeight() - ofGetHeight() / 2, 1, 0, 0));
+                } else {
+                    ps.removeParticle(ofRandom(ps.getParticleCount()));
+                }
                 break;
             case 2:
                 if(ps.getSpringCount() > ps.getParticleCount()) {

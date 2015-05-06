@@ -26,9 +26,14 @@ public:
     :particle(particle) { }
     bool operator()(const shared_ptr<Spring>& spring) {
         return spring->a == particle ||
-            spring->b == particle;
+        spring->b == particle;
     }
 };
+
+template <class T>
+void eraseRemove(vector<T>& x, const T& y) {
+    x.erase(remove(x.begin(), x.end(), y), x.end());
+}
 
 class ParticleSystem {
 protected:
@@ -52,11 +57,11 @@ protected:
         Tree tree;
         tree.build(particles);
         
-//        ofPushStyle();
-//        ofNoFill();
-//        ofSetColor(255);
-//        tree.draw();
-//        ofPopStyle();
+        //        ofPushStyle();
+        //        ofNoFill();
+        //        ofSetColor(255);
+        //        tree.draw();
+        //        ofPopStyle();
         
         int n = particles.size();
         LOOP_BEGIN(i, n) {
@@ -135,8 +140,9 @@ public:
     shared_ptr<Particle>& getParticle(int i) {
         return particles[i];
     }
-    void addParticle(const Particle& particle) {
+    shared_ptr<Particle> addParticle(const Particle& particle) {
         particles.push_back(shared_ptr<Particle>(new Particle(particle)));
+        return particles.back();
     }
     void removeParticle(int i) {
         if(!particles.empty()) {
@@ -145,6 +151,9 @@ public:
             particles.erase(particles.begin() + i);
         }
     }
+    void removeParticle(shared_ptr<Particle>& particle) {
+        eraseRemove(particles, particle);
+    }
     unsigned int getParticleCount() {
         return particles.size();
     }
@@ -152,15 +161,22 @@ public:
         return springs[i];
     }
     void addSpring(int i, int j, float stiffness, float distance = 0) {
-        springs.push_back(shared_ptr<Spring>(new Spring(particles[i], particles[j], stiffness, distance)));
+        if(i < particles.size() && j < particles.size()) {
+            addSpring(particles[i], particles[j], stiffness, distance);
+        }
     }
     void addSpring(shared_ptr<Particle>& a, shared_ptr<Particle>& b, float stiffness, float distance = 0) {
-        springs.push_back(shared_ptr<Spring>(new Spring(a, b, stiffness, distance)));
+        if(a != b) {
+            springs.push_back(shared_ptr<Spring>(new Spring(a, b, stiffness, distance)));
+        }
     }
     void removeSpring(int i) {
         if(!springs.empty()) {
             springs.erase(springs.begin() + i);
         }
+    }
+    void removeSpring(shared_ptr<Spring>& spring) {
+        (springs, spring);
     }
     unsigned int getSpringCount() {
         return springs.size();
@@ -193,7 +209,7 @@ public:
             ofSetColor(ofColor::fromHsb(((i++)%25)*10, 255, 255));
             particle->draw();
         }
-        ofSetColor(255, 32);
+        ofSetColor(255, 64);
         for(const shared_ptr<Spring>& spring : springs) {
             spring->draw();
         }
