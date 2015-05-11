@@ -71,11 +71,11 @@ bool Camera::getReady() const {
 	return ready;
 }
 
-unsigned char* Camera::getPixels() {
+ofPixels& Camera::getPixels() {
 	return img.getPixels();
 }
 
-ofPixels& Camera::getPixelsRef() {
+const ofPixels& Camera::getPixels() const {
 	return img.getPixelsRef();
 }
 

@@ -4,7 +4,7 @@
 #include "Particle.h"
 #include "Spring.h"
 
-#define USE_GCD
+//#define USE_GCD
 
 #ifdef USE_GCD
 #define LOOP_BEGIN(i, n) dispatch_apply(n, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(size_t i)

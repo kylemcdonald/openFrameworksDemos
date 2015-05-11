@@ -1,5 +1,4 @@
 #include "ofMain.h"
-#include "ofAppGlutWindow.h"
 
 class PApp : public ofBaseApp {
 public:
@@ -135,7 +134,6 @@ public:
 };
 
 int main() {
-	ofAppGlutWindow window;
-	ofSetupOpenGL(&window, 512, 512, OF_WINDOW);
+	ofSetupOpenGL(512, 512, OF_WINDOW);
 	ofRunApp(new ofApp());
 }

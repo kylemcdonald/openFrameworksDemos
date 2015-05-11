@@ -21,8 +21,8 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 	bool getReady() const;
-	unsigned char* getPixels();
-	ofPixels& getPixelsRef();
+	ofPixels& getPixels();
+	const ofPixels& getPixels() const;
 	ofTexture& getTextureReference();
 	void draw(int x, int y);
 };
