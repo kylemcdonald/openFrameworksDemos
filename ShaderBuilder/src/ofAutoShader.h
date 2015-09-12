@@ -1,5 +1,9 @@
 #pragma once
 
+#include "ofMain.h"
+#include "Poco/File.h"
+#include "Poco/Timestamp.h"
+
 class ofAutoShader : public ofShader {
 public:
 	void setup(string name) {
@@ -15,7 +19,7 @@ public:
 		string fragName = name + ".fs";
 		ofFile fragFile(fragName);
 		if(fragFile.exists()) {
-			Poco::Timestamp fragTimestamp = fragFile.getPocoFile().getLastModified();
+			Poco::Timestamp fragTimestamp = Poco::File(fragFile.getAbsolutePath()).getLastModified();
 			if(fragTimestamp != lastFragTimestamp) {
 				needsReload = true;
 				lastFragTimestamp = fragTimestamp;
@@ -27,7 +31,7 @@ public:
 		string vertName = name + ".vs";
 		ofFile vertFile(vertName);
 		if(vertFile.exists()) {
-			Poco::Timestamp vertTimestamp = vertFile.getPocoFile().getLastModified();
+			Poco::Timestamp vertTimestamp = Poco::File(vertFile.getAbsolutePath()).getLastModified();
 			if(vertTimestamp != lastVertTimestamp) {
 				needsReload = true;
 				lastVertTimestamp = vertTimestamp;
