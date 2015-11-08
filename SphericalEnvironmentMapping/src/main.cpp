@@ -10,9 +10,10 @@ public:
     void setup() {
         ofEnableDepthTest();
         ofDisableArbTex();
-        matCap.loadImage("matcap.jpg");
+        matCap.load("matcap.jpg");
         shader.load("sem");
         mesh.load("mesh.ply");
+        cam.setTranslationKey('\t');
     }
     
     void draw() {
@@ -28,7 +29,7 @@ public:
     }
     
     void dragEvent(ofDragInfo dragInfo) {
-        matCap.loadImage(dragInfo.files[0]);
+        matCap.load(dragInfo.files[0]);
         matCap.update();
     }
 };

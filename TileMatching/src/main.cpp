@@ -27,6 +27,7 @@ public:
         for(int j = y; j < y + h; j+=side) {
             for(int i = x; i < x + w; i+=side) {
                 float brightness = getBrightness(pix, i, j, side, side);
+                // try the direction of the brightness (overall gradient)
                 tiles.push_back(Tile(i, j, side, brightness));
             }
         }
@@ -43,7 +44,7 @@ class ofApp : public ofBaseApp {
 public:
     ofVideoGrabber video;
     vector<Tile> leftTiles, rightTiles;
-    int side = 20;
+    int side = 40;
     void setup() {
         video.initGrabber(1280, 720);
     }

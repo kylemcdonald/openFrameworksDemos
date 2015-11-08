@@ -22,22 +22,24 @@ public:
         ofFill();
         ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
         
-        int choice = ofRandom(3);
-        switch(choice) {
-            case 0:
-                if(ps.getParticleCount() < 2000) {
-                    ps.addParticle(Particle(ofRandomWidth() - ofGetWidth() / 2, ofRandomHeight() - ofGetHeight() / 2, 1, 0, 0));
-                } else {
-                    ps.removeParticle(ofRandom(ps.getParticleCount()));
-                }
-                break;
-            case 2:
-                if(ps.getSpringCount() > ps.getParticleCount()) {
-                    ps.removeSpring(ofRandom(ps.getSpringCount()));
-                } else {
-                    ps.addSpring(ofRandom(ps.getParticleCount()), ofRandom(ps.getParticleCount()), 2000, 100);
-                }
-                break;
+        for(int i = 0; i < 10; i++) {
+            int choice = ofRandom(3);
+            switch(choice) {
+                case 0:
+                    if(ps.getParticleCount() < 2000) {
+                        ps.addParticle(Particle(ofRandomWidth() - ofGetWidth() / 2, ofRandomHeight() - ofGetHeight() / 2, 1, 0, 0));
+                    } else {
+                        ps.removeParticle(ofRandom(ps.getParticleCount()));
+                    }
+                    break;
+                case 2:
+                    if(ps.getSpringCount() > ps.getParticleCount()) {
+                        ps.removeSpring(ofRandom(ps.getSpringCount()));
+                    } else {
+                        ps.addSpring(ofRandom(ps.getParticleCount()), ofRandom(ps.getParticleCount()), 2000, 200);
+                    }
+                    break;
+            }
         }
         ps.update();
         
@@ -45,7 +47,7 @@ public:
         ofPopMatrix();
         
         ofSetColor(255);
-        ofDrawBitmapString(ofToString((int) ofGetFrameRate()) + " fps", 32, 52);
+        ofDrawBitmapString(ofToString((int) ofGetFrameRate()) + " fps @ " + ofToString((int) ps.getParticleCount()), 32, 52);
     }
     
     void keyPressed(int key){
